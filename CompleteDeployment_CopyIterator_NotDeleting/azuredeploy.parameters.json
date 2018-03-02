@@ -1,0 +1,32 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dnsZone_name": {
+      "value": "my.dns.zone"
+    },
+    "As": {
+      "value": [
+        {
+          "name": "@",
+          "ttl": 300,
+          "ipv4Address": "8.8.8.8"
+        }
+      ]
+    },
+    "CNAMEs": {
+      "value": [
+        {
+          "name": "*",
+          "ttl": 300,
+          "alias": "whatever.your.domain.is"
+        },
+        {
+          "name": "mySubDomain",
+          "ttl": 300,
+          "alias": "mywebsite.azws.net"
+        }
+      ]
+    }
+  }
+}
