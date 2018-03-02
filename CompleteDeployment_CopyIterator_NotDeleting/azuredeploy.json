@@ -43,6 +43,7 @@
         "name": "AsCopy",
         "count": "[length(parameters('As'))]"
       },
+      "condition": "[greater(length(parameters('As')), 0)]",
       "type": "Microsoft.Network/dnsZones/A",
       "name": "[concat(parameters('dnsZone_name'), '/', parameters('As')[copyIndex()].name )]",
       "apiVersion": "2017-09-01",
@@ -63,6 +64,7 @@
         "name": "CNAMEsCopy",
         "count": "[length(parameters('CNAMEs'))]"
       },
+      "condition": "[greater(length(parameters('CNAMEs')), 0)]",
       "type": "Microsoft.Network/dnsZones/CNAME",
       "name": "[concat(parameters('dnsZone_name'), '/', parameters('CNAMEs')[copyIndex()].name )]",
       "apiVersion": "2017-09-01",
