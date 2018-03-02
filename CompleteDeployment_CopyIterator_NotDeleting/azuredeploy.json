@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dnsZone_name": {
+      "defaultValue": "my.dns.zome",
+      "type": "string"
+    },
+    "As": {
+      "defaultValue": [
+        {
+          "name": "subDomainName",
+          "ttl": 300,
+          "ipv4Address": "0.0.0.0"
+        }
+      ],
+      "type": "array"
+    },
+    "CNAMEs": {
+      "defaultValue": [
+        {
+          "name": "subDomainName",
+          "ttl": 300,
+          "alias": "other.azws.net"
+        }
+      ],
+      "type": "array"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Network/dnsZones",
+      "name": "[parameters('dnsZone_name')]",
+      "apiVersion": "2017-09-01",
+      "location": "global",
+      "tags": {},
+      "properties": {},
+      "dependsOn": []
+    },
+    {
+      "copy": {
+        "name": "AsCopy",
+        "count": "[length(parameters('As'))]"
+      },
+      "type": "Microsoft.Network/dnsZones/A",
+      "name": "[concat(parameters('dnsZone_name'), '/', parameters('As')[copyIndex()].name )]",
+      "apiVersion": "2017-09-01",
+      "properties": {
+        "TTL": "[parameters('As')[copyIndex()].ttl]",
+        "ARecords": [
+          {
+            "ipv4Address": "[parameters('As')[copyIndex()].ipv4Address]"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/dnsZones', parameters('dnsZone_name'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "CNAMEsCopy",
+        "count": "[length(parameters('CNAMEs'))]"
+      },
+      "type": "Microsoft.Network/dnsZones/CNAME",
+      "name": "[concat(parameters('dnsZone_name'), '/', parameters('CNAMEs')[copyIndex()].name )]",
+      "apiVersion": "2017-09-01",
+      "properties": {
+        "TTL": "[parameters('CNAMEs')[copyIndex()].ttl]",
+        "CNAMERecord": {
+          "cname": "[parameters('CNAMEs')[copyIndex()].alias]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/dnsZones', parameters('dnsZone_name'))]"
+      ]
+    }
+  ]
+}
